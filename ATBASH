@@ -1,0 +1,26 @@
+//Atbash
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+char bukvi[32] = { 'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я' };
+char bukvig[32] = { 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я' };
+void shifr(char* message) {
+    for (int i = 0; message[i] != '\0'; i++) {
+        char ch = message[i];
+        if (ch >= 'а' && ch <= 'я') {
+            message[i] = bukvi[31 - (ch - 'а')];
+        }
+        else if (ch >= 'А' && ch <= 'Я') {
+            message[i] = bukvig[31 - (ch - 'А')];
+        }
+    }
+}
+int main() {
+    system("chcp 1251");
+    char message[100];
+    printf("Введите сообщение для шифрования: ");
+    fgets(message, sizeof(message), stdin);
+    message[strcspn(message, "\n")] = 0;
+    printf("Зашифрованное сообщение: %s\n", message);
+    return 0;
+}
