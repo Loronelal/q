@@ -1,0 +1,27 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdio.h>
+int mod_pow(int base, int exp, int mod) {
+    int result = 1;
+    for (int i = 0; i < exp; i++) {
+        result = (result * base) % mod;
+    }
+    return result;
+}
+int main() {
+    system("chcp 1251");
+    int message;
+    int e, d, n;
+    printf("Введите число для шифрования: ");
+    scanf("%d", &message);
+    printf("Введите открытый ключ (e n): ");
+    scanf("%d %d", &e, &n);
+    printf("Введите закрытый ключ d: ");
+    scanf("%d", &d);
+    unsigned long long encrypted = mod_pow(message, e, n);
+    printf("Зашифрованное сообщение: %d\n", encrypted);
+    unsigned long long decrypted = mod_pow(encrypted, d, n);
+    printf("Расшифрованное сообщение: %d\n", decrypted);
+    return 0;
+}
