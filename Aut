@@ -1,0 +1,107 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+typedef struct {
+    char login[50];
+    char name[50];
+    char password[50];
+} User;
+void udal(char* s) {
+    int i = 0;
+    while (s[i]) i++;
+    while (i > 0 && (s[i - 1] == '\n' || s[i - 1] == '\r')) {
+        s[i - 1] = 0;
+        i--;
+    }
+}
+int parse_user(char* line, User* u) {
+    char* p = strtok(line, ",");
+    if (!p) return 0;
+    strncpy(u->login, p, 50);
+    p = strtok(NULL, ",");
+    if (!p) return 0;
+    strncpy(u->name, p, 50);
+    p = strtok(NULL, ",");
+    if (!p) return 0;
+    strncpy(u->password, p, 50);
+    udal(u->password);
+    return 1;
+}
+	int register_user() {
+    User u;
+    printf("Логин: ");
+    fgets(u.login, 50, stdin);
+    udal(u.login);
+    printf("Имя: ");
+    fgets(u.name, 50, stdin);
+    udal(u.name);
+    printf("Пароль: ");
+    fgets(u.password, 50, stdin);
+    udal(u.password);
+    FILE* f = fopen("users.csv", "r");
+    if (f) {
+        char line[100];
+        while (fgets(line, 100, f)) {
+            User tmp;
+            if (parse_user(line, &tmp)) {
+                if (strcmp(tmp.login, u.login) == 0) {
+                    printf("Пользователь уже есть\n");
+                    fclose(f);
+                    return 0;
+                }
+            }
+        }
+        fclose(f);
+    }
+    f = fopen("users.csv", "a");
+    if (!f) {
+        printf("Ошибка открытия файла\n");
+        return 0;
+    }
+    fprintf(f, "%s,%s,%s\n", u.login, u.name, u.password);
+    fclose(f);
+    printf("Зарегистрирован\n");
+    return 1;
+}
+	int login_user() {
+    char login[50], pass[50];
+    printf("Логин: ");
+    fgets(login, 50, stdin);
+    udal(login);
+    printf("Пароль: ");
+    fgets(pass, 50, stdin);
+    udal(pass);
+    FILE* f = fopen("users.csv", "r");
+    if (!f) {
+        printf("Нет пользователей\n");
+        return 0;
+    }
+    char line[100];
+    while (fgets(line, 100, f)) {
+        User u;
+        if (parse_user(line, &u)) {
+            if (strcmp(u.login, login) == 0 && strcmp(u.password, pass) == 0) {
+                printf("Привет %s!\n", u.name);
+                fclose(f);
+                return 1;
+            }
+        }
+    }
+    fclose(f);
+    printf("Неверный логин или пароль\n");
+    return 0;
+}
+	int main() {
+    system("chcp 1251");
+    int c;
+    while (1) {
+        printf("1-Вход\n2-Регистрация\n3-Выход\nВыберите: ");
+        scanf("%d", &c);
+        getchar();
+        if (c == 1) login_user();
+        else if (c == 2) register_user();
+        else if (c == 3) break;
+        else printf("Ошибка\n");
+    }
+    return 0;
+}
