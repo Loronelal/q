@@ -1,0 +1,52 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+int isAlpha(char c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+int getAlphaPos(char c) {
+    if (c >= 'A' && c <= 'Z') {
+        return c - 'A';
+    }
+    else if (c >= 'a' && c <= 'z') {
+        return c - 'a';
+    }
+    return -1;
+}
+int main() {
+    system("chcp 1251");
+    char message[200];
+    char key[200];
+    char encrypted[200];
+    printf("Введите сообщение: ");
+    fgets(message, sizeof(message), stdin);
+    message[strcspn(message, "\n")] = '\0';
+    printf("Введите ключ: ");
+    fgets(key, sizeof(key), stdin);
+    key[strcspn(key, "\n")] = '\0';
+    int keyLen = strlen(key);
+    int keyIndex = 0;
+    for (int i = 0; message[i] != '\0'; i++) {
+
+char c = message[i];
+        if (isAlpha(c)) {
+            int pPos = getAlphaPos(c);
+            int kPos = getAlphaPos(key[keyIndex % keyLen]);
+            int newPos = (pPos + kPos) % 26;
+            if (c >= 'A' && c <= 'Z') {
+                encrypted[i] = newPos + 'A';
+            }
+            else {
+                encrypted[i] = newPos + 'a';
+            }
+
+            keyIndex++;
+        }
+        else {
+            encrypted[i] = c;
+        }
+    }
+    encrypted[strlen(message)] = '\0';
+    printf("Зашифрованное сообщение: %s\n", encrypted);
+    return 0;
+}
