@@ -21,6 +21,7 @@ int main() {
     printf("Введите сообщение для шифрования: ");
     fgets(message, sizeof(message), stdin);
     message[strcspn(message, "\n")] = 0;
+    shifr(message);
     printf("Зашифрованное сообщение: %s\n", message);
     return 0;
 }
