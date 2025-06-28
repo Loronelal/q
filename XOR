@@ -1,19 +1,47 @@
 //Вернама
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
- 
+#include <string.h>
+#include <stdlib.h> 
+void toHex(unsigned char val, char* hex) {
+    sprintf(hex, "%02X", val);
+}
+long hexToDecimal(const char* hex) {
+    char* endptr;
+    return strtol(hex, &endptr, 16);
+}
 int main() {
-    char text[256];
-    printf("Сообщение: ");
-    fgets(text, 256, stdin);
- 
-    srand(time(0));
-    for (int i = 0; text[i]; i++) {
-        char key = rand() % 256;
-        text[i] ^= key;
-        printf("%02X ", text[i]);  // Вывод в HEX формате
+    char message[100], key[100];
+    int len;
+    printf("Введите сообщение: ");
+    fgets(message, sizeof(message), stdin);
+    len = strlen(message);
+    message[len - 1] = '\0';
+    printf("Введите ключ (такой же длины): ");
+    fgets(key, sizeof(key), stdin);
+    key[strlen(key) - 1] = '\0';
+    if (strlen(message) != strlen(key)) {
+        printf("Длина сообщения и ключа должна быть одинаковая!\n");
+        return 1;
     }
- 
+    char encrypted[100];
+    for (int i = 0; i < len; i++) {
+        encrypted[i] = message[i] ^ key[i];
+    }
+    encrypted[len] = '\0';
+    printf("Зашифрованное сообщение (шестнадцатеричное представление): ");
+    for (int i = 0; i < len; i++) {
+        char hex[3];
+        toHex(encrypted[i], hex);
+        printf("%s ", hex);
+    }
+    printf("\n");
+    printf("Зашифрованное сообщение (десятичное представление): ");
+    for (int i = 0; i < len; i++) {
+        char hex[3];
+        toHex(encrypted[i], hex);
+        printf("%ld ", hexToDecimal(hex));
+    }
+    printf("\n");
     return 0;
 }
